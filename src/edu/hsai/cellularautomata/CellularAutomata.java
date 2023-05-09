@@ -1,4 +1,4 @@
-package edeu.hsai.cellularautomata;
+package edu.hsai.cellularautomata;
 
 import java.util.Arrays;
 import java.util.Random;

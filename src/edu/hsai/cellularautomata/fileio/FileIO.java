@@ -1,6 +1,6 @@
-package edeu.hsai.cellularautomata.fileio;
+package edu.hsai.cellularautomata.fileio;
 
-import edeu.hsai.cellularautomata.CellularAutomata;
+import edu.hsai.cellularautomata.CellularAutomata;
 
 import java.io.IOException;
 import java.nio.file.StandardOpenOption;

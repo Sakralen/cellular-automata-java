@@ -1,7 +1,7 @@
-package edeu.hsai.cellularautomata;
+package edu.hsai.cellularautomata;
 
-import edeu.hsai.cellularautomata.fileio.FileIO;
-import edeu.hsai.cellularautomata.pair.Pair;
+import edu.hsai.cellularautomata.fileio.FileIO;
+import edu.hsai.cellularautomata.pair.Pair;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +26,7 @@ public class CellularAutomataApp {
     private static final int statesToPrintCount = 10;
 
     private static final String regexForSizeSet = "([1-9]\\d*)x([1-9]\\d*)";
-    private static final String regexForManualSet = "\\d\\s*\\d\\s*[01]";
+    private static final String regexForManualSet = "\\d\\s+\\d\\s+[01]";
 
     private static final String menuLines = """
             +----------------------------------------+
@@ -66,12 +66,12 @@ public class CellularAutomataApp {
     }
 
     private static void loadAutomata() {
-        System.out.println("Введите путь до файла: (default: input.txt)");
+        System.out.println("Введите путь до файла: (default: input-example.txt)");
         String input = scanner.nextLine().trim();
         System.out.println();
 
         if (input.isEmpty()) {
-            input = "input.txt";
+            input = "input-example.txt";
         }
 
         int[][] matrix;
@@ -102,11 +102,14 @@ public class CellularAutomataApp {
                     .initRandomly();
         } else {
             int[][] matrix = new int[height][width];
-            // TODO: что ты тудукаешь, доделай ввод из консоли
+            printMatrix(matrix);
+            System.out.println();
+            fillManually(matrix);
             automata = CellularAutomata.buildCellularAutomata()
                     .setRule(rule).initFromArray(matrix);
         }
 
+        System.out.println();
         execAutomata();
     }
 
@@ -181,6 +184,69 @@ public class CellularAutomataApp {
         }
     }
 
+    private static void fillManually(int[][] matrix) {
+        do {
+            System.out.println("Введите строку, столбец и значение в формате {i j value}:");
+            String input = scanner.nextLine().trim();
+            System.out.println();
+
+            boolean isCorrect = true;
+
+            if (input.matches(regexForManualSet)) {
+                String[] splitInput = input.split("\\s+");
+                int row = 0;
+                int col = 0;
+                int val = 0;
+                try {
+                    row = Integer.parseInt(splitInput[0]);
+                    col = Integer.parseInt(splitInput[1]);
+                    val = Integer.parseInt(splitInput[2]);
+                } catch (Exception e) {
+                    isCorrect = false;
+                }
+
+                if (isCorrect && !(row < 0 || row >= matrix.length
+                        || col < 0 || col >= matrix[0].length)) {
+                    matrix[row][col] = val;
+                    printMatrix(matrix);
+                    System.out.println();
+                } else {
+                    isCorrect = false;
+                }
+            } else {
+                isCorrect = false;
+            }
+
+            if (!isCorrect) {
+                System.out.println(incorrectInputString);
+                System.out.println();
+            }
+        } while (isContinue());
+    }
+
+    private static boolean isContinue() {
+        while (true) {
+            System.out.println("Продолжить ввод? Y/N (default: Y)");
+            String input = scanner.nextLine().trim();
+            System.out.println();
+
+            if (input.isEmpty()) {
+                return true;
+            }
+
+            if (input.equals("Y") || input.equals("y")) {
+                return true;
+            }
+
+            if (input.equals("N") || input.equals("n")) {
+                return false;
+            }
+
+            System.out.println(incorrectInputString);
+            System.out.println();
+        }
+    }
+
     private static void execAutomata() {
         try {
             Files.createDirectories(Path.of("output/"));
@@ -189,7 +255,7 @@ public class CellularAutomataApp {
         }
 
         String outputPath = "output/output-"
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MM-dd-HH-mm-ss"))
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-HH-mm-ss"))
                 + ".txt";
 
         for (int i = 0; i < statesToPrintCount; i++) {
@@ -198,5 +264,14 @@ public class CellularAutomataApp {
         }
 
         System.out.println("Результат работы автомата находится в файле: " + outputPath);
+    }
+
+    public static void printMatrix(int[][] matrix) {
+        for (int[] rows : matrix) {
+            for (int x : rows) {
+                System.out.print(x + " ");
+            }
+            System.out.println();
+        }
     }
 }
