@@ -82,11 +82,18 @@ public class CellularAutomata {
         }
 
         StringBuilder sb = new StringBuilder();
+
+        sb.append('+').append("-".repeat(width * 2 - 1)).append('+').append("\n");
+
         for (int[] row : grid) {
+            sb.append("|");
             sb.append(String.join(" ", Arrays.stream(row)
                     .mapToObj(this::convertToSymbol).toArray(String[]::new)));
+            sb.append("|");
             sb.append("\n");
         }
+
+        sb.append('+').append("-".repeat(width * 2 - 1)).append('+').append("\n");
 
         return sb.toString();
     }
