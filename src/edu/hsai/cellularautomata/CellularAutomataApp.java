@@ -26,7 +26,7 @@ public class CellularAutomataApp {
     private static final int statesToPrintCount = 10;
 
     private static final String regexForSizeSet = "([1-9]\\d*)x([1-9]\\d*)";
-    private static final String regexForManualSet = "\\d\\s+\\d\\s+[01]";
+    private static final String regexForManualSet = "\\d+\\s+\\d+\\s+[01]";
 
     private static final String menuLines = """
             +----------------------------------------+
